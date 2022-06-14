@@ -60,4 +60,37 @@ public class ProcessH {
         int result = proc.exitValue();
         return result;
     }
+	
+	    /**
+     * 외부 프로그램 실행 후 Command 입력값 넘기기
+     * @param processName 프로세스 이름 (경로 포함 가능)
+     * @param param 가변 매개변수
+     * @return 외부 프로그램에서 출력되는 값 String형
+     * @throws Exception
+     */
+    public static String run(String processName,String...param) throws Exception{
+        String ret = "";
+        List<String> command = new ArrayList<>();
+        command.add(processName);
+        for(String str : param)
+            command.add(str);
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.command(command);
+
+
+        Process proc = pb.start();
+        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream())); // 입력값
+
+        bw.write("입력값");
+        bw.write("/n");
+        bw.flush();
+
+        ret+=br.readLine()+"\n";
+        proc.destroy(); // 프로세스 강제 종료
+
+        //실행파일에서 던져주는 return값
+        int result = proc.exitValue();
+        return ret;
+    }
 }
